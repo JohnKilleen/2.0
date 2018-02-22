@@ -37,7 +37,18 @@ rCOB16 <- read.csv("/Users/johnk/Downloads/newCompassTables/rCOB16.csv",header=T
 rCOB17 <- read.csv("/Users/johnk/Downloads/newCompassTables/rCOB17.csv",header=TRUE) 
 rCOBs <- merge(rCOB,rCOB16,by='id',all=TRUE) %>% 
   merge(.,rCOB17,by='id',all=TRUE)
-write.csv(rCORs,"rCOB.csv",row.names = FALSE)
+write.csv(rCOBs,"rCOB.csv",row.names = FALSE)
 dCOB <- read.csv("/Users/johnk/Documents/2.0/src/data/metric/census/dCOB.csv",header=TRUE) %>% 
   mutate(.,y_2016=y_2015, y_2017=y_2016)
 write.csv(dCOB,"dCOB.csv",row.names = FALSE)
+
+## HOUSING CODE VIOLATIONS
+rRCODE <- read.csv("/Users/johnk/Documents/2.0/src/data/metric/census/rRCODE.csv",header=TRUE)
+rRCODE17 <- read.csv("/Users/johnk/Downloads/newCompassTables/rRCODE.csv",header=TRUE) 
+rCODEs <- merge(rRCODE,rRCODE17,by='id',all=TRUE)
+write.csv(rCODEs,"rRCODE.csv",row.names = FALSE)
+
+dRCODE <- read.csv("/Users/johnk/Documents/2.0/src/data/metric/census/dRCODE.csv",header=TRUE) 
+dRCODE17 <- read.csv("/Users/johnk/Downloads/newCompassTables/dRCODE17.csv",header=TRUE) 
+dRCODEs <- merge(dRCODE,dRCODE17,by='id',all=TRUE)
+write.csv(dRCODEs,"dRCODE.csv",row.names = FALSE)
