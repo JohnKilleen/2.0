@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1519314793833.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "C44E5067",
+    "lastKnownWriteTime" : 1519316835,
+    "last_content_update" : 1519316835278,
+    "path" : "~/Documents/2.0/tableUpdates/CompassTableUpdates.R",
+    "project_path" : "CompassTableUpdates.R",
+    "properties" : {
+        "cursorPosition" : "20,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

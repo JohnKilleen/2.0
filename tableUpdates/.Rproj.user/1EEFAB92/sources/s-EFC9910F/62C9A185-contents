@@ -1,0 +1,83 @@
+
+library(reshape)
+library(tidyverse)
+library(lubridate)
+library(magrittr)
+library(stringr)
+library(gsubfn)
+
+
+laus <- read.csv("/Users/johnk/Documents/d4/D4_LAUS_90_17.csv",header=TRUE,stringsAsFactors = F)
+##UnemploymentRate
+df <- filter(laus, Month !=0 & AreaName=="Durham County") %>% 
+  melt(., id = c("Month","Year"), measure=c(8))
+
+df2 <- filter(laus, Month !=0 & AreaName=="North Carolina"& Adjusted=="Unadjusted") %>%
+  mutate(.,t=100,"Not.in.Labor.Force"=(t-LaborForceParticipationRate_Pct),
+         Date = ymd(paste0(df2$Year, "/", df2$Month, "/01")),
+         Percent.Unemployed=df2$PctUnempl)%>% 
+  melt(., id = c("Date"), measure=c(14,12))
+
+### + durham not in labor force
+d <- read.csv("durhamNotinLF90_15.csv",header=TRUE)
+ 
+###COUNTY PLOT
+g <-ggplot(df, aes(x=Month, y=value)) 
+g + geom_bar(stat="identity") + 
+  ggtitle("Durham County Unemployment Rates") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_wrap(~ Year) + theme(axis.text.x = element_text(size=7)) +
+  scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+
+  labs(caption="Source: NC Department of Commerce, 2017",
+       x = "Month", y = "% of labor force unemployed")
+
+##Lines WITH NC
+g <-ggplot(df2, aes(x=Date, y=value,colour=variable)) 
+g + geom_line(stat="identity") + 
+  scale_color_manual(values=c("#2c7fb8", "#636363"))+
+  ggtitle("North Carolina: Unemployed and Not in the Labor Force, 1976-2017") +
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(legend.title=element_blank())+
+  guides(colour = guide_legend(override.aes = list(size=3)))+
+  theme(axis.text.x = element_text(size=10), axis.text.y=element_text(size=9))+
+  labs(caption="Source: NC Department of Commerce, Monthly through September 2017",
+       x =element_blank(), y = "Percent")
+
+g2 <- ggplot(data=df2, aes(x=D, y=value, colour=variable)) 
+g2 + geom_line() %>% 
+  facet_wrap(~Year)
+
+
+
+
+## ALL COUNTIES EMPLOYED NUMBER
+lausAll <- filter(laus, Month==0,AreaName!="North Carolina") %>% 
+  melt(., id=c(1,2), measure=c(6)) %>% 
+  cast(., AreaName ~ Year, all=TRUE) 
+colnames(lausAll)[1] <- "County"
+
+filter(laus, Month !=0 & AreaName=="Duplin County") %>% 
+  melt(., id = c("Month","Year"), measure=c(8))
+write.csv(lausAll,"County_EmployedCount_Annual_90_16.csv",row.names = FALSE)
+##QCEW
+qcew <- read.csv("/Users/johnk/Documents/d4/QCEW_2000_2017.csv",header=TRUE,stringsAsFactors = F) 
+  
+##Average Weekly Wage
+q <- filter(qcew, AreaName=="North Carolina") %>% 
+  melt(., id = c("Industry","Year"), measure=c(8)) %>% 
+  mutate(.,employees=as.integer(value))##DONT WORK YET
+
+g <- ggplot(q, aes(x=year,y=value))
+g + geom_line(size=1.5, alpha=0.7, color="Industry") +
+  #geom_line(data = q,group = 4,size=1.5, alpha=0.7, color="Blue") +
+  ggtitle("Summary Ejectments in Durham (Black) and Wake (Blue) 2010-2017")+
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1)) +
+  labs(caption="Source: DataWorks NC; NC Admin. Office of Courts, 2017",
+       x = "Month", y = "# of summary ejectments filed")
+
+g <-ggplot(q, aes(x=Industry, y=value)) 
+g + geom_line(stat="identity") + 
+  ggtitle("Duplin County Average Weekly Wages") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_wrap(~ Year) + theme(axis.text.x = element_text(size=7)) +
+  scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))
